@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom'
 
-export function AppLayout() {
+export function AuthLayout() {
   return (
     <div>
-      <h1>Header</h1>
+      <h1>Autenticação</h1>
 
       <div>
         <Outlet />
