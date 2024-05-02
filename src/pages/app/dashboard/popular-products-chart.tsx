@@ -47,9 +47,14 @@ export function PopularProductsChart() {
         </div>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={240}>
+        <ResponsiveContainer
+          width="100%"
+          height={240}
+          className="focus:outline-none"
+        >
           <PieChart style={{ fontSize: 12 }}>
             <Pie
+              className="focus:outline-none"
               data={data}
               dataKey="amount"
               nameKey="product"
