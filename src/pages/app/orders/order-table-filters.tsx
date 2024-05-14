@@ -14,34 +14,33 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-const orderFilterSchema = z.object({
+const orderFiltersSchema = z.object({
   orderId: z.string().optional(),
   customerName: z.string().optional(),
   status: z.string().optional(),
 })
 
-type OrderFilterSchema = z.infer<typeof orderFilterSchema>
+type OrderFiltersSchema = z.infer<typeof orderFiltersSchema>
 
-export function OrderTableFilter() {
-  const [searchParams, serSearchParams] = useSearchParams()
+export function OrderTableFilters() {
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const orderId = searchParams.get('orderId')
   const customerName = searchParams.get('customerName')
   const status = searchParams.get('status')
 
-  const { register, handleSubmit, control, reset } = useForm<OrderFilterSchema>(
-    {
-      resolver: zodResolver(orderFilterSchema),
+  const { register, handleSubmit, control, reset } =
+    useForm<OrderFiltersSchema>({
+      resolver: zodResolver(orderFiltersSchema),
       defaultValues: {
         orderId: orderId ?? '',
         customerName: customerName ?? '',
         status: status ?? 'all',
       },
-    },
-  )
+    })
 
-  function handleFilter({ orderId, customerName, status }: OrderFilterSchema) {
-    serSearchParams((state) => {
+  function handleFilter({ customerName, orderId, status }: OrderFiltersSchema) {
+    setSearchParams((state) => {
       if (orderId) {
         state.set('orderId', orderId)
       } else {
@@ -67,11 +66,11 @@ export function OrderTableFilter() {
   }
 
   function handleClearFilters() {
-    serSearchParams((state) => {
+    setSearchParams((state) => {
       state.delete('orderId')
       state.delete('customerName')
       state.delete('status')
-      state.delete('page', '1')
+      state.set('page', '1')
 
       return state
     })
@@ -88,7 +87,7 @@ export function OrderTableFilter() {
       onSubmit={handleSubmit(handleFilter)}
       className="flex items-center gap-2"
     >
-      <span className="text-sm font-semibold">Filtros: </span>
+      <span className="text-sm font-semibold">Filtros:</span>
       <Input
         placeholder="ID do pedido"
         className="h-8 w-auto"
@@ -99,7 +98,6 @@ export function OrderTableFilter() {
         className="h-8 w-[320px]"
         {...register('customerName')}
       />
-
       <Controller
         name="status"
         control={control}
@@ -116,8 +114,8 @@ export function OrderTableFilter() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="peding">Pendente</SelectItem>
+                <SelectItem value="all">Todos status</SelectItem>
+                <SelectItem value="pending">Pendente</SelectItem>
                 <SelectItem value="canceled">Cancelado</SelectItem>
                 <SelectItem value="processing">Em preparo</SelectItem>
                 <SelectItem value="delivering">Em entrega</SelectItem>
@@ -126,18 +124,16 @@ export function OrderTableFilter() {
             </Select>
           )
         }}
-      />
-
-      <Button type="submit" variant="secondary" size="xs">
+      ></Controller>
+      <Button variant="secondary" size="xs" type="submit">
         <Search className="mr-2 h-4 w-4" />
         Filtrar resultados
       </Button>
-
       <Button
-        type="button"
+        onClick={handleClearFilters}
         variant="outline"
         size="xs"
-        onClick={handleClearFilters}
+        type="button"
       >
         <X className="mr-2 h-4 w-4" />
         Remover filtros
