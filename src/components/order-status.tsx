@@ -48,7 +48,7 @@ export function OrderStatus({ status }: OrderStatusProps) {
         />
       )}
 
-      <span data-testid="badge" className="font-medium text-muted-foreground">
+      <span className="font-medium text-muted-foreground">
         {orderStatusMap[status]}
       </span>
     </div>
